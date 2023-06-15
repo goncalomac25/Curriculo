@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Login & Signup Form</title>
+    <link rel="stylesheet" href="main.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h2>Login Form</h2>
+      <div id="loginResult"></div>
+      <div id="loginForm">
+        <div class="form-group">
+          <label for="username">username:</label>
+          <input
+            type="username"
+            id="username"
+            name="username"
+            placeholder="Enter your username"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label for="password">Password:</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            placeholder="Enter your password"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <button type="button" onclick="login()">Login</button>
+        </div>
+      </div>
+      <div id="todoResult"></div>
+    </div>
+
+    <script>
+      const getTodo = () => {
+        const url = 'http://localhost:4242/api/todo/getAll';
+
+        const token = localStorage.getItem('token-iusabndkjanbksd');
+
+        fetch(url, {
+          method: 'GET',
+          headers: {
+            Authorization: 'Bearer ' + token,
+          },
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            console.log(data);
+            document.getElementById('todoResult').innerHTML =
+              JSON.stringify(data);
+          })
+          .catch((error) => {
+            console.error('Error:', error);
+          });
+      };
+
+      function login() {
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+
+        // Replace with your login endpoint URL
+        const url = 'http://localhost:4242/api/user/login';
+
+        const requestBody = { username, password };
+
+        fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(requestBody),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            localStorage.setItem('token', data.token);
+
+            // Handle login response
+            document.getElementById('loginResult').innerHTML =
+              JSON.stringify(data);
+
+            // Redirect to final.html
+            window.location.href = 'index.html';
+          })
+          .catch((error) => {
+            console.error('Error:', error);
+          });
+
+      }
+
+    </script>
+
+  </body>
+</html>
